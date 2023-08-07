@@ -1,2 +1,3 @@
-def send_email():
+def send_email(image):
     print("Email was sent.")
+    print(image)
