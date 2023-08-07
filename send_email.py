@@ -9,6 +9,7 @@ RECEIVER = os.getenv("EMAIL")
 
 
 def send_email(image):
+    print("Send email started.")
     email_content = EmailMessage()
     email_content["Subject"] = "Object detected"
     email_content.set_content("A moving object was detected")
@@ -24,6 +25,7 @@ def send_email(image):
     gmail.login(SENDER, PASSWORD)
     gmail.sendmail(SENDER, RECEIVER, email_content.as_string())
     gmail.quit()
+    print("Send email ended.")
 
 
 if __name__ == '__main__':
