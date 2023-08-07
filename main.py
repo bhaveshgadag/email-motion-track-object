@@ -1,10 +1,13 @@
 import cv2
+from send_email import send_email
 
 camera = cv2.VideoCapture(0)
 
 first_frame = None
+status_list = []
 while True:
     check, frame = camera.read()
+    status = 0
 
     gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     gray_frame_gau = cv2.GaussianBlur(gray_frame, (21, 21), 0)
@@ -23,8 +26,17 @@ while True:
             continue
 
         x, y, w, h = cv2.boundingRect(contour)
-        cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0))
+        rectangle = cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0))
+        if rectangle.any():
+            status = 1
 
+    status_list.append(status)
+    status_list = status_list[-2:]
+
+    if status_list[0] == 1 and status_list[1] == 0:
+        send_email()
+    print(status_list)
+    # status_list = status_list[-2:]
     cv2.imshow("Video", frame)
 
     key = cv2.waitKey(1)
