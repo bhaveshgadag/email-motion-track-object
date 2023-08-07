@@ -1,6 +1,14 @@
 import cv2
 from send_email import send_email
 from glob import glob
+import os
+
+
+def clean_folder():
+    images = glob('images/*.png')
+    for image in images:
+        os.remove(image)
+
 
 camera = cv2.VideoCapture(0)
 
@@ -19,7 +27,7 @@ while True:
         first_frame = gray_frame_gau
 
     delta_frame = cv2.absdiff(first_frame, gray_frame_gau)
-    thresh_frame = cv2.threshold(delta_frame, 60, 255, cv2.THRESH_BINARY)[1]
+    thresh_frame = cv2.threshold(delta_frame, 75, 255, cv2.THRESH_BINARY)[1]
     dil_frame = cv2.dilate(thresh_frame, None, iterations=2)
 
     contours, check = cv2.findContours(dil_frame, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
@@ -43,6 +51,7 @@ while True:
 
     if status_list[0] == 1 and status_list[1] == 0:
         send_email(object_image)
+        clean_folder()
     cv2.imshow("Video", frame)
 
     key = cv2.waitKey(1)
